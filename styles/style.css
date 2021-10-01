@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
 
 :root {
+  --light: #f0f3f9;
+  --dark-blue: #271b72;
+  --light-blue: #5042ad;
+  --purple: #9e00ff;
   --border-tic-tac-toe: 9px solid #271b72;
 }
 
@@ -12,23 +16,25 @@
 
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #f0f3f9;
+  background-color: var(--light);
 }
 
 .row {
   display: flex;
-  justify-content: center;
-}
-
-.start-game {
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  margin-top: 128px;
 }
 
-.title-game {
+.row-game-start {
+  margin-top: 72px;
+}
+
+.game-title {
   font-size: 64px;
+  font-weight: 700;
   margin-bottom: 42px;
+  color: var(--dark-blue);
 }
 
 .img-tic-tac-toe {
@@ -36,29 +42,35 @@ body {
   margin-bottom: 42px;
 }
 
-.btn-start {
+.btn,
+select {
   padding: 16px 24px;
   font-size: 16px;
   font-weight: 600;
   border-radius: 6px;
-  background-color: #271b72;
-  color: #f0f3f9;
+  background-color: var(--dark-blue);
+  color: var(--light);
   border-width: 1px;
-  border: 1px solid #5042ad;
+  border: 1px solid var(--light-blue);
   box-shadow: 0 4px 24px 0 rgb(79 114 205 / 15%);
   font-family: 'Poppins', sans-serif;
 }
 
-.btn-start:hover {
-  background-color: #5042ad;
+select {
+  padding: 12px 18px;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.btn:hover,
+select:hover {
   cursor: pointer;
   box-shadow: 0 4px 42px 0 rgb(79 114 205 / 30%);
+  background-color: var(--light-blue);
 }
 
 .row-gameboard-grid {
   display: none;
-  flex-direction: column;
-  align-items: center;
 }
 
 .gameboard-grid {
@@ -73,54 +85,52 @@ body {
 .cell {
   width: 100px;
   height: 100px;
-  /* border: 1px solid; */
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 50px;
   font-weight: 700;
-  color: #5042ad;
+  color: var(--light-blue);
 }
 
 .cell:hover {
   cursor: pointer;
-  /* background-color: rgba(255, 248, 220, 0.815); */
-  background-color: #9e00ff;
+  background-color: var(--purple);
+}
+
+div[data-cell='0'] {
+  border-right: var(--border-tic-tac-toe);
+  border-bottom: var(--border-tic-tac-toe);
 }
 
 div[data-cell='1'] {
-  border-right: var(--border-tic-tac-toe);
   border-bottom: var(--border-tic-tac-toe);
 }
 
 div[data-cell='2'] {
+  border-left: var(--border-tic-tac-toe);
   border-bottom: var(--border-tic-tac-toe);
 }
 
 div[data-cell='3'] {
-  border-left: var(--border-tic-tac-toe);
+  border-right: var(--border-tic-tac-toe);
   border-bottom: var(--border-tic-tac-toe);
 }
 
 div[data-cell='4'] {
-  border-right: var(--border-tic-tac-toe);
   border-bottom: var(--border-tic-tac-toe);
 }
 
 div[data-cell='5'] {
-  border-bottom: var(--border-tic-tac-toe);
-}
-
-div[data-cell='6'] {
   border-left: var(--border-tic-tac-toe);
   border-bottom: var(--border-tic-tac-toe);
 }
 
-div[data-cell='7'] {
+div[data-cell='6'] {
   border-right: var(--border-tic-tac-toe);
 }
 
-div[data-cell='9'] {
+div[data-cell='8'] {
   border-left: var(--border-tic-tac-toe);
 }
 
@@ -131,5 +141,6 @@ div[data-cell='9'] {
 
   .title-game {
     font-size: 42px;
+    font-weight: normal;
   }
 }

@@ -1,101 +1,61 @@
-const gameboardGridROW = document.querySelector('.row-gameboard-grid')
-const gameboardGrid = document.querySelector('.gameboard-grid')
-const btnStart = document.querySelector('.btn-start')
-const startGameRow = document.querySelector('.start-game')
+const PLAYERSSELECTION = ['pvp', 'pvcpu']
+const playersSelection = document.querySelector('#players')
+const startBTN = document.querySelector('button.btn-start')
+const rowStartGame = document.querySelector('div.row-game-start')
+const rowGameBoard = document.querySelector('div.row-gameboard-grid')
+const gameBoardGrid = document.querySelector('div.gameboard-grid')
+const resetBTN = document.querySelector('button.btn-reset')
 
-const player = (name, type = 'X') => {
-  const listMovePlayed = []
+let playerType = PLAYERSSELECTION[0]
+let gameboard = []
 
-  const addMove = (move) => {
-    listMovePlayed.push(move)
-  }
-
-  return { name, type, addMove, listMovePlayed }
+// SELECTION Player vs Player or Player vs CPU
+function handlePlayerSelection(e) {
+  playerType = e.target.value || PLAYERSSELECTION[0]
 }
 
-const game = (() => {
-  let lastPlayed = ''
-
-  let winner = ''
-
-  const gameboard = ['', '', '', '', '', '', '', '', '']
-
-  const gameEnd = (gameboard) =>
-    (gameboard[1] === gameboard[2] &&
-      gameboard[2] === gameboard[3] &&
-      gameboard[1]) ||
-    (gameboard[4] === gameboard[5] &&
-      gameboard[5] === gameboard[6] &&
-      gameboard[4]) ||
-    (gameboard[7] === gameboard[8] &&
-      gameboard[8] === gameboard[9] &&
-      gameboard[7]) ||
-    (gameboard[1] === gameboard[4] &&
-      gameboard[4] === gameboard[7] &&
-      gameboard[1]) ||
-    (gameboard[2] === gameboard[5] &&
-      gameboard[5] === gameboard[8] &&
-      gameboard[2]) ||
-    (gameboard[3] === gameboard[6] &&
-      gameboard[6] === gameboard[9] &&
-      gameboard[3]) ||
-    (gameboard[1] === gameboard[5] &&
-      gameboard[5] === gameboard[9] &&
-      gameboard[1]) ||
-    (gameboard[3] === gameboard[5] &&
-      gameboard[5] === gameboard[7] &&
-      gameboard[3])
-
-  const startGame = () => {
-    while (!winner || !winner.length) {}
-    alert('WE have a winner', winner)
-  }
-
-  const handleCellClick = (e) => {
-    // if (playerCanPlay) {
-    if (!lastPlayed || !lastPlayed.length || lastPlayed === 'O') {
-      // console.log(e.target.dataset.cell)
-      e.target.textContent = 'X'
-      gameboard[e.target.dataset.cell] = 'X'
-      lastPlayed = 'X'
-    } else {
-      e.target.textContent = 'O'
-      gameboard[e.target.dataset.cell] = 'O'
-      lastPlayed = 'O'
-    }
-    // }
-    // return
-  }
-
-  const displayGameboard = (gameboardGrid) => {
-    let div
-    for (let i = 1; i < gameboard.length + 1; i++) {
-      div = document.createElement('div')
-      div.setAttribute('class', 'cell')
-      div.setAttribute('data-cell', i)
-      div.addEventListener('click', (e) => {
-        // console.log(!gameEnd(gameboard))
-        if (!gameEnd(gameboard)) {
-          handleCellClick(e)
-          winner = gameEnd(gameboard)
-          console.log(winner)
-        }
-      })
-      gameboardGrid.appendChild(div)
-    }
-  }
-
-  return {
-    displayGameboard,
-    gameEnd,
-    gameboard,
-  }
-})()
-
-function onGameStart(e) {
-  game.displayGameboard(gameboardGrid)
-  startGameRow.style.display = 'none'
-  gameboardGridROW.style.display = 'flex'
+function handleCellClick(e, cellNum) {
+  console.log(cellNum)
 }
 
-btnStart.addEventListener('click', onGameStart)
+// START handler
+function handleStartBtnClick(e) {
+  playerType = playerType || PLAYERSSELECTION[0]
+  rowStartGame.style.display = 'none'
+  rowGameBoard.style.display = 'flex'
+
+  // Display the grid
+  displayGrid(gameBoardGrid, gameboard)
+}
+
+function displayGrid(gameBoardHTML, gameBoardArray) {
+  let div
+  for (let i = 0; i < 9; i++) {
+    div = document.createElement('div')
+    div.setAttribute('class', 'cell')
+    div.setAttribute('data-cell', i)
+    div.addEventListener('click', (e) => handleCellClick(e, i))
+    gameBoardArray[i] = null
+    gameBoardHTML.appendChild(div)
+  }
+}
+
+function handleResetBtnClick(e) {
+  rowStartGame.style.display = 'flex'
+  rowGameBoard.style.display = 'none'
+  gameBoardGrid.textContent = ''
+}
+
+/**
+ * GAME
+ */
+function isArrayFull(array) {
+  return array.every((el) => el)
+}
+
+/**
+ * EVENT LISTENER
+ */
+playersSelection.addEventListener('click', handlePlayerSelection)
+startBTN.addEventListener('click', handleStartBtnClick)
+resetBTN.addEventListener('click', handleResetBtnClick)
