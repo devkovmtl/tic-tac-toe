@@ -30,38 +30,72 @@ function handlePlayerSelection(e) {
   playerType = e.target.value || PLAYERSSELECTION[0]
 }
 
-function cpuChoice(gameboard) {
-  let num = Math.floor(Math.random() * 10)
-  if (gameboard[num]) {
-    cpuChoice(gameboard)
+function cpuMove(gameboard) {
+  if (winner || gameboard.every((c) => typeof c === 'string')) {
+    return
   }
-  // if (players[1] === 'pvcpu') {
-  //   let cpu = cpuChoice(gameboard)
-  //   let div = document.querySelector(`div[data-cell='${cpu}']`)
-  //   div.textContent = playerTwo.type
-  //   gameboard[cpu] = playerTwo.type
-  //   playerTwo.addMove(cpu)
-  //   lastPlayer = playerTwo
-  // }
+  let num = Math.floor(Math.random() * 9)
+  while (gameboard[num] !== null) {
+    num = cpuMove(gameboard)
+  }
   return num
 }
 
 function handleCellClick(e, cellNum) {
-  // console.log(gameboard[cellNum])
-  // already something in cell
-  if (gameboard[cellNum]) {
-    return
-  }
-  if (!lastPlayer || lastPlayer.type === playerTwo.type) {
-    e.target.textContent = playerOne.type
-    gameboard[cellNum] = playerOne.type
-    playerOne.addMove(cellNum)
-    lastPlayer = playerOne
+  if (playerType === 'pvcpu') {
+    if (gameboard[cellNum]) {
+      return
+    }
+    winner = isEndGame(gameboard)
+    if (winner) {
+      tieOrWinner(gameboard)
+      return
+    }
+    if (!lastPlayer || lastPlayer.type === playerTwo.type) {
+      e.target.textContent = playerOne.type
+      gameboard[cellNum] = playerOne.type
+      playerOne.addMove(cellNum)
+      lastPlayer = playerOne
+      // check winner
+      winner = isEndGame(gameboard)
+
+      if (winner) {
+        tieOrWinner(winner)
+        return
+      }
+      setTimeout(() => {
+        if (!winner || !gameboard.every((c) => typeof c === 'string')) {
+          const cpuNum = cpuMove(gameboard)
+          console.log('CPU MOVE RECEIVE,', cpuNum)
+          let div = document.querySelector(`div[data-cell='${cpuNum}']`)
+          div.textContent = playerTwo.type
+          gameboard[cpuNum] = playerTwo.type
+          playerTwo.addMove(cpuNum)
+          lastPlayer = playerTwo
+          winner = isEndGame(gameboard)
+          tieOrWinner(winner)
+        } else {
+          winner = isEndGame(gameboard)
+          tieOrWinner(winner)
+        }
+      }, 250)
+    }
   } else {
-    e.target.textContent = playerTwo.type
-    gameboard[cellNum] = playerTwo.type
-    playerTwo.addMove(cellNum)
-    lastPlayer = playerTwo
+    // already something in cell
+    if (gameboard[cellNum]) {
+      return
+    }
+    if (!lastPlayer || lastPlayer.type === playerTwo.type) {
+      e.target.textContent = playerOne.type
+      gameboard[cellNum] = playerOne.type
+      playerOne.addMove(cellNum)
+      lastPlayer = playerOne
+    } else {
+      e.target.textContent = playerTwo.type
+      gameboard[cellNum] = playerTwo.type
+      playerTwo.addMove(cellNum)
+      lastPlayer = playerTwo
+    }
   }
 }
 
@@ -86,6 +120,17 @@ function handleStartBtnClick(e) {
   displayGrid(gameBoardGrid, gameboard)
 }
 
+function tieOrWinner(w) {
+  if (!w && gameboard.every((c) => typeof c === 'string')) {
+    rowEndGame.style.display = 'flex'
+    resultGame.textContent = `It's a Tie!`
+  }
+  if (w) {
+    rowEndGame.style.display = 'flex'
+    resultGame.textContent = `Winner is ${w} !`
+  }
+}
+
 function displayGrid(gameBoardHTML, gameBoardArray) {
   let div
   lastPlayer = undefined
@@ -97,14 +142,7 @@ function displayGrid(gameBoardHTML, gameBoardArray) {
     div.addEventListener('click', (e) => {
       handleCellClick(e, i)
       winner = isEndGame(gameboard)
-      if (!winner && gameboard.every((c) => typeof c === 'string')) {
-        rowEndGame.style.display = 'flex'
-        resultGame.textContent = `It's a Tie!`
-      }
-      if (winner) {
-        rowEndGame.style.display = 'flex'
-        resultGame.textContent = `Winner is ${winner} !`
-      }
+      tieOrWinner(winner)
     })
     gameBoardArray[i] = null
     gameBoardHTML.appendChild(div)
