@@ -134,6 +134,23 @@ div[data-cell='8'] {
   border-left: var(--border-tic-tac-toe);
 }
 
+.row-end-game {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(79 114 205 / 96%);
+  display: none;
+}
+
+.result-game {
+  color: var(--light);
+  margin: 2.4rem auto;
+  font-size: 48px;
+  font-weight: 700;
+}
+
 @media (max-width: 475px) {
   .start-game {
     margin-top: 64px;
